@@ -23,6 +23,18 @@ const GROWTH_CHART_DATA = [
 
 const PLANS = [
   {
+    id: "basic",
+    name: "Basic",
+    amount: 2_500,
+    monthly: "3%",
+    term: "12 months",
+    totalReturn: "36%",
+    perks: ["Giveaway entries", "Reward points"],
+    highlight: false,
+    color: "#0b141f",
+    border: "#182430",
+  },
+  {
     id: "starter",
     name: "Starter",
     amount: 5_000,

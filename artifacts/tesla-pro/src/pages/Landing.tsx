@@ -34,6 +34,15 @@ const CARS = [
 
 const PLANS = [
   {
+    id: "basic",
+    name: "Basic",
+    amount: 2_500,
+    monthly: "3%",
+    term: "12 months",
+    perks: ["Giveaway entries", "Reward points"],
+    highlight: false,
+  },
+  {
     id: "starter",
     name: "Starter",
     amount: 5_000,
