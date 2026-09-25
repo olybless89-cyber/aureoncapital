@@ -21,6 +21,46 @@ if (Number.isNaN(port) || port <= 0) {
 // Run schema migrations on startup (idempotent)
 async function runMigrations() {
   try {
+    // Base schema — matches lib/db/src/schema/{users,orders}.ts exactly.
+    // Everything else in this function (ALTERs, UPDATEs, seeding) assumes
+    // these tables already exist, which was previously only true because
+    // `drizzle-kit push` had been run manually once against each database.
+    // CREATE TABLE IF NOT EXISTS makes a brand-new, never-migrated database
+    // (e.g. a freshly provisioned Railway Postgres) self-bootstrapping too.
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id text PRIMARY KEY,
+        email text NOT NULL UNIQUE,
+        password_hash text NOT NULL,
+        first_name text NOT NULL,
+        last_name text NOT NULL,
+        role text NOT NULL DEFAULT 'user',
+        status text NOT NULL DEFAULT 'active',
+        balance real NOT NULL DEFAULT 0,
+        reward_points integer NOT NULL DEFAULT 0,
+        referral_count integer NOT NULL DEFAULT 0,
+        phone text,
+        member_code text NOT NULL,
+        must_change_password boolean NOT NULL DEFAULT false,
+        created_at timestamptz NOT NULL DEFAULT now(),
+        updated_at timestamptz NOT NULL DEFAULT now()
+      );
+    `);
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS orders (
+        id text PRIMARY KEY,
+        user_id text NOT NULL,
+        user_email text NOT NULL,
+        user_name text NOT NULL,
+        type text NOT NULL,
+        description text NOT NULL,
+        amount real NOT NULL DEFAULT 0,
+        status text NOT NULL DEFAULT 'pending',
+        created_at timestamptz NOT NULL DEFAULT now(),
+        updated_at timestamptz NOT NULL DEFAULT now()
+      );
+    `);
+
     await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS phone text;`);
     await pool.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS must_change_password boolean NOT NULL DEFAULT false;`);
 
