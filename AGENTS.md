@@ -39,15 +39,18 @@ Set in `artifacts/api-server/.env` (gitignored — never commit real secrets). S
 
 ## Live deployment
 
-Deploys to **Railway** (API) + **Vercel** (frontend, `www.aureoncapital.com`). Railpack (Railway's builder) auto-detects the workspace and uses the root `package.json` scripts: `build`=`pnpm --filter @workspace/api-server... run build` (scoped — `mockup-sandbox`/`tesla-pro` vite configs demand `PORT`), `start`=`node artifacts/api-server/dist/index.mjs` (also set via `deploy.startCommand` in `railpack.json`; install step pinned to `pnpm install --no-frozen-lockfile` to avoid Railpack/pnpm config drift).
+**Everything on Railway — single service, no Vercel/Netlify.** (Prior to 2026-09-26 this was split: Railway for the API + Vercel for the frontend. That split is gone — `vercel.json` was removed from the repo root, `artifacts/tesla-pro/`, and `artifacts/tesla-pro/src/`. Do not recreate it.)
 
-**Vercel**: root `vercel.json` has SPA rewrites. Project settings — Build Command `pnpm run build`, Output `artifacts/tesla-pro/dist`, env `VITE_API_BASE_URL=https://aureoncapital-api-production.up.railway.app`. **Hobby-team gotcha**: only the team owner's commits auto-deploy — repo-local git identity is set to the owner (`olybless89 <olybless89@gmail.com>`) with `Co-authored-by: openhands` trailer; commits authored by any other identity get blocked.
+The `api-server` Express app now also serves the built frontend directly (`artifacts/api-server/src/app.ts`): after `express.static(artifacts/tesla-pro/dist/public)`, a catch-all route (`/^\/(?!api\/).*/`) serves `index.html` for any non-`/api` GET request, so client-side (wouter) routing works on refresh/deep-link. Because the frontend and API are now served from the same origin, `VITE_API_BASE_URL` should be **left unset** at build time — `main.tsx` only calls `setBaseUrl()` when it's set, so calls fall through to relative `/api/...` paths automatically. CORS in `app.ts` is now mostly vestigial (kept for local dev against other hosts) since there's no cross-origin frontend anymore.
 
-Railway dashboard → New project → Deploy from GitHub → pick this repo. Variables needed by the api-server service:
+Railpack (Railway's builder) auto-detects the workspace and uses the root `package.json` scripts: `build`=`pnpm --filter @workspace/api-server... run build && pnpm --filter @workspace/tesla-pro run build` (builds the API, then the Vite frontend into `artifacts/tesla-pro/dist/public`), `start`=`node artifacts/api-server/dist/index.mjs` (also set via `deploy.startCommand` in `railpack.json`; install step pinned to `pnpm install --no-frozen-lockfile` to avoid Railpack/pnpm config drift; `process.cwd()` at runtime is the repo root, which is how `app.ts` locates the frontend `dist/public` folder).
+
+Railway dashboard → New project → Deploy from GitHub → pick this repo → one service (`aureoncapital-api`) serves both the app and the API at its Railway domain (custom domain `aureoncapital.com` / `www.aureoncapital.com` can be pointed at it same as before). Variables needed:
 
 - `DATABASE_URL` — Supabase direct or pooler URL (rewritten to the `aws-1-*` pooler; see `lib/db/src/index.ts`)
 - `SUPABASE_POOLER_REGION=eu-west-1` (only when the URL is a direct host)
 - `SESSION_SECRET`, `SEED_ADMIN` (only `true` for first boot), optional `RESEND_API_KEY` / `EMAIL_FROM`
+- Do **not** set `VITE_API_BASE_URL` (see above — leaving it unset is what makes same-origin `/api` calls work)
 
 Railway supports IPv6, so the direct Supabase host works there — the pooler rewrite also works, harmless either way.
 
