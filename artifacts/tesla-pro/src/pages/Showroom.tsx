@@ -131,7 +131,7 @@ function PurchaseModal({ car, onClose }: { car: typeof CARS[0]; onClose: () => v
   const { down, remaining, perMonth } = centsSafeSplit(car.price, term.downPct, term.months);
   const dueNow = plan === "installment" ? down : car.price;
 
-  const methodLabel = method === "bank" ? "Bank Transfer" : method === "bitcoin" ? "Bitcoin (BTC)" : "Wallet Balance";
+  const methodLabel = method === "bank" ? "Bank Transfer" : method === "bitcoin" ? "Bitcoin (BTC)" : method === "card" ? "Debit/Credit Card" : "Wallet Balance";
 
   const handlePurchase = () => {
     if (!user) { navigate("/login"); return; }
@@ -285,6 +285,7 @@ function PurchaseModal({ car, onClose }: { car: typeof CARS[0]; onClose: () => v
                         { id: "bank", label: "Bank Transfer", sub: "Wire transfer — instructions will be sent via email" },
                         { id: "wallet", label: "Wallet Balance", sub: "Deduct from your Aureon Capital wallet" },
                         { id: "bitcoin", label: "Bitcoin (BTC)", sub: "Pay on-chain — instructions shown below" },
+                        { id: "card", label: "Debit/Credit Card", sub: "Visa, Mastercard — secure link sent to your email" },
                       ].map(m => (
                         <label key={m.id} onClick={() => setMethod(m.id)} style={{
                           display: "flex", alignItems: "flex-start", gap: 12, padding: "14px 16px",
@@ -310,6 +311,14 @@ function PurchaseModal({ car, onClose }: { car: typeof CARS[0]; onClose: () => v
                   {method === "bitcoin" && (
                     <div style={{ marginBottom: 20 }}>
                       <BitcoinPaymentPanel usdAmount={dueNow} />
+                    </div>
+                  )}
+                  {method === "card" && (
+                    <div style={{ background: "#0a0f18", border: "1px solid #1a2332", borderRadius: 8, padding: "14px 16px", marginBottom: 20 }}>
+                      <div style={{ fontSize: 11, color: "#8b95a1", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>Secure Payment Link</div>
+                      <p style={{ color: "#8b95a1", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
+                        A secure card-payment link for ${dueNow.toLocaleString()} will be sent to <strong style={{ color: "#e8eaec" }}>{user?.email}</strong> shortly. Do not share the link with anyone. We never collect card details directly through this site.
+                      </p>
                     </div>
                   )}
 

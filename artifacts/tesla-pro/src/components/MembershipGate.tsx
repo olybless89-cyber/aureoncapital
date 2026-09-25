@@ -20,8 +20,10 @@ export function MembershipGate({ user }: { user: { id: string; firstName: string
   const { data: orders } = useListOrders({ userId: user.id });
   const [justSubmitted, setJustSubmitted] = useState(false);
   const [tierId, setTierId] = useState(MEMBERSHIP_TIERS[0].id);
+  const [method, setMethod] = useState<"bitcoin" | "card">("bitcoin");
 
   const selectedTier = MEMBERSHIP_TIERS.find(t => t.id === tierId) ?? MEMBERSHIP_TIERS[0];
+  const methodLabel = method === "bitcoin" ? "Bitcoin (BTC)" : "Debit/Credit Card";
 
   // Once a membership_fee order exists, keep showing the "waiting on admin"
   // state on every future visit/refresh — don't make the user pay twice or
@@ -42,7 +44,7 @@ export function MembershipGate({ user }: { user: { id: string; firstName: string
     createOrder.mutate({
       data: {
         type: "membership_fee",
-        description: `${selectedTier.name} Membership Activation Fee ($${selectedTier.amount.toLocaleString()}) — paid via Bitcoin (BTC)`,
+        description: `${selectedTier.name} Membership Activation Fee ($${selectedTier.amount.toLocaleString()}) — paid via ${methodLabel}`,
         amount: selectedTier.amount,
       },
     }, {
@@ -65,7 +67,7 @@ export function MembershipGate({ user }: { user: { id: string; firstName: string
             <div style={{ fontSize: 48, marginBottom: 16 }}>⏳</div>
             <h1 style={{ fontSize: 22, fontWeight: 400, margin: "0 0 12px" }}>Payment Submitted</h1>
             <p style={{ color: "#8b95a1", fontSize: 14, lineHeight: 1.7, marginBottom: 28 }}>
-              We've received your membership activation request. Our team will confirm your Bitcoin payment and activate your account shortly — you'll get an email once it's live. Refresh this page after confirmation to continue.
+              We've received your membership activation request. Our team will confirm your payment and activate your account shortly — you'll get an email once it's live. Refresh this page after confirmation to continue.
             </p>
             <button onClick={handleLogout} style={{ background: "none", border: "none", color: "#8b95a1", fontSize: 13, cursor: "pointer", textDecoration: "underline" }}>
               Sign out
@@ -116,9 +118,38 @@ export function MembershipGate({ user }: { user: { id: string; firstName: string
               ))}
             </div>
 
-            <div style={{ marginBottom: 24 }}>
-              <BitcoinPaymentPanel usdAmount={selectedTier.amount} />
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: 12, color: "#8b95a1", marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.1em" }}>Payment Method</div>
+              <div style={{ display: "flex", gap: 10 }}>
+                {([
+                  { id: "bitcoin" as const, label: "Bitcoin (BTC)", sub: "Pay on-chain — address shown below" },
+                  { id: "card" as const, label: "Debit/Credit Card", sub: "Visa, Mastercard — secure link by email" },
+                ]).map(m => (
+                  <label key={m.id} onClick={() => setMethod(m.id)} style={{
+                    flex: 1, display: "flex", flexDirection: "column", gap: 4, padding: "12px 14px",
+                    background: method === m.id ? "#0d1a2e" : "#0a0f18",
+                    border: `1px solid ${method === m.id ? "#1e3a5f" : "#1a2332"}`,
+                    borderRadius: 8, cursor: "pointer",
+                  }}>
+                    <span style={{ fontSize: 13, color: "#e8eaec", fontWeight: 600 }}>{m.label}</span>
+                    <span style={{ fontSize: 11, color: "#8b95a1" }}>{m.sub}</span>
+                  </label>
+                ))}
+              </div>
             </div>
+
+            {method === "bitcoin" ? (
+              <div style={{ marginBottom: 24 }}>
+                <BitcoinPaymentPanel usdAmount={selectedTier.amount} />
+              </div>
+            ) : (
+              <div style={{ background: "#0a0f18", border: "1px solid #1a2332", borderRadius: 8, padding: "14px 16px", marginBottom: 24 }}>
+                <div style={{ fontSize: 11, color: "#8b95a1", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 8 }}>Secure Payment Link</div>
+                <p style={{ color: "#8b95a1", fontSize: 13, lineHeight: 1.7, margin: 0 }}>
+                  A secure card-payment link for ${selectedTier.amount.toLocaleString()} will be sent to your email shortly. Do not share the link with anyone. We never collect card details directly through this site.
+                </p>
+              </div>
+            )}
 
             <button
               onClick={handleSubmit}
