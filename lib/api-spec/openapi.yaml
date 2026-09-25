@@ -1,0 +1,570 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: StockTrade Pro Platform API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: stats
+    description: Stats operations
+  - name: users
+    description: User management
+  - name: orders
+    description: Order management
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: Registration successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current authenticated user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout current session
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /stats/overview:
+    get:
+      operationId: getStatsOverview
+      tags: [stats]
+      summary: Get admin platform stats overview
+      responses:
+        "200":
+          description: Stats overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StatsOverview"
+
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      summary: List all users
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: role
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+
+  /users/{userId}:
+    get:
+      operationId: getUser
+      tags: [users]
+      summary: Get a user by ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    patch:
+      operationId: updateUser
+      tags: [users]
+      summary: Update a user (admin)
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRequest"
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /orders:
+    get:
+      operationId: listOrders
+      tags: [orders]
+      summary: List all orders
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: userId
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      operationId: createOrder
+      tags: [orders]
+      summary: Create a new order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
+      responses:
+        "201":
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{orderId}:
+    get:
+      operationId: getOrder
+      tags: [orders]
+      summary: Get an order by ID
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+    patch:
+      operationId: updateOrder
+      tags: [orders]
+      summary: Update an order (admin)
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderRequest"
+      responses:
+        "200":
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /admin/copy-trade:
+    post:
+      operationId: createCopyTrade
+      tags: [orders]
+      summary: Admin mirrors a simulated trade into one or more user accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CopyTradeRequest"
+      responses:
+        "201":
+          description: Copy trade applied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CopyTradeResponse"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phone:
+          type: string
+      required:
+        - email
+        - password
+        - firstName
+        - lastName
+        # phone is collected on the register form but is optional at the
+        # API contract level so existing clients without it still work.
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+      required:
+        - user
+        - token
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+        status:
+          type: string
+          enum: [active, pending, suspended]
+        balance:
+          type: number
+        rewardPoints:
+          type: integer
+        referralCount:
+          type: integer
+        memberCode:
+          type: string
+        # True on first login after an admin reset/handover so the user is
+        # forced through the /change-password flow. Returned by /auth/login
+        # (LoginResponse.user) and /auth/me — the Login page reads it to
+        # decide whether to redirect to /change-password.
+        mustChangePassword:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - email
+        - firstName
+        - lastName
+        - role
+        - status
+        - balance
+        - rewardPoints
+        - referralCount
+        - memberCode
+        - mustChangePassword
+        - createdAt
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [user, admin]
+        status:
+          type: string
+          enum: [active, pending, suspended]
+        balance:
+          type: number
+        rewardPoints:
+          type: integer
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        userEmail:
+          type: string
+        userName:
+          type: string
+        type:
+          type: string
+          enum: [deposit, withdrawal, investment, purchase, copy_trade, membership_fee]
+        description:
+          type: string
+        amount:
+          type: number
+        status:
+          type: string
+          enum: [pending, confirmed, processing, delivered, cancelled]
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - userEmail
+        - userName
+        - type
+        - description
+        - amount
+        - status
+        - createdAt
+
+    CreateOrderRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [deposit, withdrawal, investment, purchase, copy_trade, membership_fee]
+        description:
+          type: string
+        amount:
+          type: number
+      required:
+        - type
+        - description
+        - amount
+
+    UpdateOrderRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [pending, confirmed, processing, delivered, cancelled]
+
+    CopyTradeRequest:
+      type: object
+      properties:
+        userIds:
+          type: array
+          items:
+            type: string
+          minItems: 1
+        symbol:
+          type: string
+        side:
+          type: string
+          enum: [buy, sell]
+        quantity:
+          type: number
+        price:
+          type: number
+      required:
+        - userIds
+        - symbol
+        - side
+        - quantity
+        - price
+
+    CopyTradeResponse:
+      type: object
+      properties:
+        ordersCreated:
+          type: integer
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+      required:
+        - ordersCreated
+        - orders
+
+    StatsOverview:
+      type: object
+      properties:
+        totalUsers:
+          type: integer
+        newUsersThisWeek:
+          type: integer
+        totalRevenue:
+          type: number
+        totalInvested:
+          type: number
+        pendingTransactions:
+          type: integer
+        activeInvestments:
+          type: integer
+        totalOrders:
+          type: integer
+        pendingOrders:
+          type: integer
+      required:
+        - totalUsers
+        - newUsersThisWeek
+        - totalRevenue
+        - totalInvested
+        - pendingTransactions
+        - activeInvestments
+        - totalOrders
+        - pendingOrders

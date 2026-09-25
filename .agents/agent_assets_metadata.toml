@@ -1,0 +1,14 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "QjJZ_7u7PR3yx8pGeDrMY"
+uri = "file://tesla-pro-platform.zip"
+type = "unspecified"
+title = "Tesla Pro Platform — Source Code"
+
+[[outputs]]
+id = "vo0EtznqGwAx_YkuTUBwC"
+uri = "file://tesla-pro-full.zip"
+type = "unspecified"
+title = "Tesla Pro — Complete Source Code"

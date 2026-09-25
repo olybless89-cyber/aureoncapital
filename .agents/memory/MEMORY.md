@@ -1,0 +1,1 @@
+- [Supabase + Render connectivity](supabase-render-connectivity.md) — direct Supabase URL is IPv6-only; use eu-west-1 pooler rewrite in lib/db/src/index.ts

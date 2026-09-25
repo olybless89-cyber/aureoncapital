@@ -1,0 +1,13 @@
+{
+  "$schema": "https://railpack.com/railpack.schema.json",
+  "steps": {
+    "install": {
+      "commands": [
+        { "cmd": "pnpm install --no-frozen-lockfile", "customName": "Install dependencies" }
+      ]
+    }
+  },
+  "deploy": {
+    "startCommand": "node artifacts/api-server/dist/index.mjs"
+  }
+}

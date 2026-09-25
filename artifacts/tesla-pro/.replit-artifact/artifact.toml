@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "Tesla Pro Platform"
+version = "1.0.0"
+id = "artifacts/tesla-pro"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24144
+
+[services.development]
+run = "pnpm --filter @workspace/tesla-pro run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/tesla-pro", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/tesla-pro/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "24144"
+BASE_PATH = "/"
