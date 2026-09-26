@@ -39,7 +39,7 @@ const PLANS = [
     amount: 2_500,
     monthly: "3%",
     term: "12 months",
-    perks: ["Giveaway entries", "Reward points"],
+    perks: ["Giveaway entries", "Reward points", "15% off an Electric Vehicle — balance paid from your returns"],
     highlight: false,
   },
   {
@@ -48,7 +48,7 @@ const PLANS = [
     amount: 5_000,
     monthly: "5%",
     term: "12 months",
-    perks: ["Giveaway entries", "Reward points", "Member card", "Community access"],
+    perks: ["Giveaway entries", "Reward points", "Member card", "Community access", "30% off an Electric Vehicle — balance paid from your returns"],
     highlight: false,
   },
   {
@@ -57,7 +57,7 @@ const PLANS = [
     amount: 8_500,
     monthly: "7%",
     term: "12 months",
-    perks: ["All Starter perks", "Priority support", "Digital assets access", "2× reward multiplier"],
+    perks: ["All Starter perks", "Priority support", "Digital assets access", "2× reward multiplier", "45% off an Electric Vehicle — balance paid from your returns"],
     highlight: true,
   },
   {
@@ -66,7 +66,16 @@ const PLANS = [
     amount: 15_000,
     monthly: "10%",
     term: "12 months",
-    perks: ["All Growth perks", "VIP events", "Dedicated advisor", "5× reward multiplier", "Early car access"],
+    perks: ["All Growth perks", "VIP events", "Dedicated advisor", "5× reward multiplier", "Early car access", "60% off an Electric Vehicle — balance paid from your returns"],
+    highlight: false,
+  },
+  {
+    id: "diamond",
+    name: "Diamond",
+    amount: 50_000,
+    monthly: "45%",
+    term: "12 months",
+    perks: ["All Elite perks", "Free Electric Vehicle — any model, yours to keep", "Dedicated concierge onboarding"],
     highlight: false,
   },
 ];
