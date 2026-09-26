@@ -5,6 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { AppLayout } from "@/components/AppLayout";
 import { AuthLayout } from "@/components/AuthLayout";
 import { BitcoinPaymentPanel } from "@/components/BitcoinPaymentPanel";
+import { EthereumPaymentPanel } from "@/components/EthereumPaymentPanel";
 
 const CARS = [
   {
@@ -131,7 +132,7 @@ function PurchaseModal({ car, onClose }: { car: typeof CARS[0]; onClose: () => v
   const { down, remaining, perMonth } = centsSafeSplit(car.price, term.downPct, term.months);
   const dueNow = plan === "installment" ? down : car.price;
 
-  const methodLabel = method === "bank" ? "Bank Transfer" : method === "bitcoin" ? "Bitcoin (BTC)" : method === "card" ? "Debit/Credit Card" : "Wallet Balance";
+  const methodLabel = method === "bank" ? "Bank Transfer" : method === "bitcoin" ? "Bitcoin (BTC)" : method === "ethereum" ? "Ethereum (ETH)" : method === "card" ? "Debit/Credit Card" : "Wallet Balance";
 
   const handlePurchase = () => {
     if (!user) { navigate("/login"); return; }
@@ -285,6 +286,7 @@ function PurchaseModal({ car, onClose }: { car: typeof CARS[0]; onClose: () => v
                         { id: "bank", label: "Bank Transfer", sub: "Wire transfer — instructions will be sent via email" },
                         { id: "wallet", label: "Wallet Balance", sub: "Deduct from your Aureon Capital wallet" },
                         { id: "bitcoin", label: "Bitcoin (BTC)", sub: "Pay on-chain — instructions shown below" },
+                        { id: "ethereum", label: "Ethereum (ETH)", sub: "Pay on-chain — instructions shown below" },
                         { id: "card", label: "Debit/Credit Card", sub: "Visa, Mastercard — secure link sent to your email" },
                       ].map(m => (
                         <label key={m.id} onClick={() => setMethod(m.id)} style={{
@@ -311,6 +313,11 @@ function PurchaseModal({ car, onClose }: { car: typeof CARS[0]; onClose: () => v
                   {method === "bitcoin" && (
                     <div style={{ marginBottom: 20 }}>
                       <BitcoinPaymentPanel usdAmount={dueNow} />
+                    </div>
+                  )}
+                  {method === "ethereum" && (
+                    <div style={{ marginBottom: 20 }}>
+                      <EthereumPaymentPanel usdAmount={dueNow} />
                     </div>
                   )}
                   {method === "card" && (

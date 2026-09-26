@@ -3,6 +3,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { useGetMe, useCreateOrder } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
 import { BitcoinPaymentPanel } from "@/components/BitcoinPaymentPanel";
+import { EthereumPaymentPanel } from "@/components/EthereumPaymentPanel";
 
 const USDT_WALLET = "TNCgyc7SYM7LFHhSaCBcP1ehPEfPw2fpTa";
 
@@ -11,6 +12,7 @@ const METHODS = [
   { id: "wire",   label: "Wire Transfer",     icon: "🏦", sub: "International / SWIFT — 1–3 business days" },
   { id: "crypto", label: "USDT (TRC-20)",      icon: "💎", sub: "Tether stablecoin — instant confirmation" },
   { id: "btc",    label: "Bitcoin (BTC)",     icon: "₿", sub: "On-chain BTC — confirmed by our team" },
+  { id: "eth",    label: "Ethereum (ETH)",    icon: "⟠", sub: "On-chain ETH — confirmed by our team" },
   { id: "card",   label: "Debit/Credit Card", icon: "💳", sub: "Visa, Mastercard — instant" },
 ];
 
@@ -116,6 +118,12 @@ export default function DepositPage() {
                   <BitcoinPaymentPanel usdAmount={Number(amount)} />
                 </>
               )}
+              {method === "eth" && (
+                <>
+                  <div style={{ fontSize: 12, color: "#8b95a1", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>Send Ethereum</div>
+                  <EthereumPaymentPanel usdAmount={Number(amount)} />
+                </>
+              )}
               {method === "crypto" && (
                 <>
                   <div style={{ fontSize: 12, color: "#8b95a1", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 14 }}>Send USDT to this address</div>
@@ -202,7 +210,7 @@ export default function DepositPage() {
             </div>
 
             {/* Method */}
-            <div style={{ marginBottom: method === "crypto" || method === "btc" ? 16 : 28 }}>
+            <div style={{ marginBottom: method === "crypto" || method === "btc" || method === "eth" ? 16 : 28 }}>
               <div style={{ fontSize: 12, color: "#8b95a1", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 12 }}>Payment Method</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {METHODS.map(m => (
@@ -240,6 +248,13 @@ export default function DepositPage() {
             {method === "btc" && (
               <div style={{ marginBottom: 28 }}>
                 <BitcoinPaymentPanel usdAmount={Number(amount) || undefined} />
+              </div>
+            )}
+
+            {/* Inline ETH wallet when ethereum selected */}
+            {method === "eth" && (
+              <div style={{ marginBottom: 28 }}>
+                <EthereumPaymentPanel usdAmount={Number(amount) || undefined} />
               </div>
             )}
 

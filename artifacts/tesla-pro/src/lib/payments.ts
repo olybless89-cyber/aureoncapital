@@ -1,8 +1,9 @@
-// Central Bitcoin payment configuration, used for car purchases (Showroom),
+// Central crypto payment configuration, used for car purchases (Showroom),
 // membership activation (MembershipGate), and investment/wallet deposits
-// (Deposit page). All BTC payments are manually reconciled and confirmed by
-// an admin — there is no on-chain payment verification in this app.
-export const BTC_WALLET_ADDRESS = "bc1qqt3wtaxcm9dzcxrjd9yr4xsk4aplsq5pj24t39";
+// (Deposit page). All crypto payments are manually reconciled and confirmed
+// by an admin — there is no on-chain payment verification in this app.
+export const BTC_WALLET_ADDRESS = "bc1qle8zzce4v2v36ucwtvxmc0g53g3hnsale940u3";
+export const ETH_WALLET_ADDRESS = "0x676C9Ef651b0EaC48Ce67dbF7b830022F8CdcB52";
 
 // One-time account-activation tiers offered on MembershipGate.tsx. Both
 // create a "membership_fee" order — the backend (routes/orders.ts) flips

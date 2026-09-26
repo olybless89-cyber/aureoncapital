@@ -4,6 +4,7 @@ import { useCreateOrder, useLogout, useListOrders } from "@workspace/api-client-
 import { clearToken } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { BitcoinPaymentPanel } from "@/components/BitcoinPaymentPanel";
+import { EthereumPaymentPanel } from "@/components/EthereumPaymentPanel";
 import { MEMBERSHIP_TIERS } from "@/lib/payments";
 
 // Full-screen paywall rendered by AppLayout in place of the app whenever a
@@ -20,10 +21,10 @@ export function MembershipGate({ user }: { user: { id: string; firstName: string
   const { data: orders } = useListOrders({ userId: user.id });
   const [justSubmitted, setJustSubmitted] = useState(false);
   const [tierId, setTierId] = useState(MEMBERSHIP_TIERS[0].id);
-  const [method, setMethod] = useState<"bitcoin" | "card">("bitcoin");
+  const [method, setMethod] = useState<"bitcoin" | "ethereum" | "card">("bitcoin");
 
   const selectedTier = MEMBERSHIP_TIERS.find(t => t.id === tierId) ?? MEMBERSHIP_TIERS[0];
-  const methodLabel = method === "bitcoin" ? "Bitcoin (BTC)" : "Debit/Credit Card";
+  const methodLabel = method === "bitcoin" ? "Bitcoin (BTC)" : method === "ethereum" ? "Ethereum (ETH)" : "Debit/Credit Card";
 
   // Once a membership_fee order exists, keep showing the "waiting on admin"
   // state on every future visit/refresh — don't make the user pay twice or
@@ -123,6 +124,7 @@ export function MembershipGate({ user }: { user: { id: string; firstName: string
               <div style={{ display: "flex", gap: 10 }}>
                 {([
                   { id: "bitcoin" as const, label: "Bitcoin (BTC)", sub: "Pay on-chain — address shown below" },
+                  { id: "ethereum" as const, label: "Ethereum (ETH)", sub: "Pay on-chain — address shown below" },
                   { id: "card" as const, label: "Debit/Credit Card", sub: "Visa, Mastercard — secure link by email" },
                 ]).map(m => (
                   <label key={m.id} onClick={() => setMethod(m.id)} style={{
@@ -141,6 +143,10 @@ export function MembershipGate({ user }: { user: { id: string; firstName: string
             {method === "bitcoin" ? (
               <div style={{ marginBottom: 24 }}>
                 <BitcoinPaymentPanel usdAmount={selectedTier.amount} />
+              </div>
+            ) : method === "ethereum" ? (
+              <div style={{ marginBottom: 24 }}>
+                <EthereumPaymentPanel usdAmount={selectedTier.amount} />
               </div>
             ) : (
               <div style={{ background: "#0a0f18", border: "1px solid #1a2332", borderRadius: 8, padding: "14px 16px", marginBottom: 24 }}>
