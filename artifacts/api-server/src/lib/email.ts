@@ -44,10 +44,10 @@ export async function sendWelcomeEmail(opts: {
             <div style="font-size:12px;color:#8a9bb0;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Member Code</div>
             <div style="font-size:22px;font-weight:700;color:#e31937;letter-spacing:2px;">${opts.memberCode}</div>
           </div>
-          <a href="https://aureoncapital.com/dashboard" style="display:inline-block;background:#e31937;color:#fff;font-weight:600;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;">
+          <a href="https://aureoncapital.online/dashboard" style="display:inline-block;background:#e31937;color:#fff;font-weight:600;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;">
             Go to Dashboard →
           </a>
-          <p style="color:#3a4552;font-size:12px;margin-top:40px;">Aureon Capital · aureoncapital.com</p>
+          <p style="color:#3a4552;font-size:12px;margin-top:40px;">Aureon Capital · aureoncapital.online</p>
         </div>
       `,
     });
@@ -110,10 +110,10 @@ export async function sendOrderConfirmationEmail(opts: {
               </tr>
             </table>
           </div>
-          <a href="https://aureoncapital.com/transactions" style="display:inline-block;background:#e31937;color:#fff;font-weight:600;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;">
+          <a href="https://aureoncapital.online/transactions" style="display:inline-block;background:#e31937;color:#fff;font-weight:600;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;">
             View Transactions →
           </a>
-          <p style="color:#3a4552;font-size:12px;margin-top:40px;">Aureon Capital · aureoncapital.com</p>
+          <p style="color:#3a4552;font-size:12px;margin-top:40px;">Aureon Capital · aureoncapital.online</p>
         </div>
       `,
     });
@@ -177,10 +177,10 @@ export async function sendOrderStatusEmail(opts: {
               </tr>
             </table>
           </div>
-          <a href="https://aureoncapital.com/dashboard" style="display:inline-block;background:#e31937;color:#fff;font-weight:600;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;">
+          <a href="https://aureoncapital.online/dashboard" style="display:inline-block;background:#e31937;color:#fff;font-weight:600;font-size:15px;padding:14px 32px;border-radius:8px;text-decoration:none;">
             Go to Dashboard →
           </a>
-          <p style="color:#3a4552;font-size:12px;margin-top:40px;">Aureon Capital · aureoncapital.com</p>
+          <p style="color:#3a4552;font-size:12px;margin-top:40px;">Aureon Capital · aureoncapital.online</p>
         </div>
       `,
     });

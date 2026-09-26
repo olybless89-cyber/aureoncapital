@@ -45,7 +45,7 @@ The `api-server` Express app now also serves the built frontend directly (`artif
 
 Railpack (Railway's builder) auto-detects the workspace and uses the root `package.json` scripts: `build`=`pnpm --filter @workspace/api-server... run build && pnpm --filter @workspace/tesla-pro run build` (builds the API, then the Vite frontend into `artifacts/tesla-pro/dist/public`), `start`=`node artifacts/api-server/dist/index.mjs` (also set via `deploy.startCommand` in `railpack.json`; install step pinned to `pnpm install --no-frozen-lockfile` to avoid Railpack/pnpm config drift; `process.cwd()` at runtime is the repo root, which is how `app.ts` locates the frontend `dist/public` folder).
 
-Railway dashboard → New project → Deploy from GitHub → pick this repo → one service (`aureoncapital-api`) serves both the app and the API at its Railway domain (custom domain `aureoncapital.com` / `www.aureoncapital.com` can be pointed at it same as before). Variables needed:
+Railway dashboard → New project → Deploy from GitHub → pick this repo → one service (`aureoncapital-api`) serves both the app and the API at its Railway domain. Custom domain: `aureoncapital.online` / `www.aureoncapital.online`, both attached via `generate-domain` (CNAME → the Railway-assigned target per domain — see the Railway dashboard's Domains tab for current values) and pointed at DNS by the registrar (Namecheap). CORS in `app.ts` allows both. Variables needed:
 
 - `DATABASE_URL` — Supabase direct or pooler URL (rewritten to the `aws-1-*` pooler; see `lib/db/src/index.ts`)
 - `SUPABASE_POOLER_REGION=eu-west-1` (only when the URL is a direct host)

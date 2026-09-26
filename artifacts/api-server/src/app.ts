@@ -33,8 +33,8 @@ app.use(cors({
     /\.onrender\.com$/,
     /\.all-hands\.dev$/,
     /localhost/,
-    "https://aureoncapital.com",
-    "https://www.aureoncapital.com",
+    "https://aureoncapital.online",
+    "https://www.aureoncapital.online",
   ],
   credentials: true,
 }));
